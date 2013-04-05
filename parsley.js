@@ -559,8 +559,8 @@
       }
 
       // alaways bind keyup event, for better UX when a field is invalid
-      var triggers = ( !this.options.trigger ? '' : this.options.trigger )
-        + ( new RegExp( 'key', 'i' ).test( this.options.trigger ) ? '' : ' keyup' );
+      var triggers = ( !this.options.trigger ? '' : this.options.trigger );
+        // + ( new RegExp( 'key', 'i' ).test( this.options.trigger ) ? '' : ' keyup' );
 
       // alaways bind change event, for better UX when a select is invalid
       if ( this.$element.is( 'select' ) ) {
@@ -857,9 +857,11 @@
       // TODO: refacto properly
       // if required constraint but field is not null, do not display
       if ( 'required' === constraint.name && null !== this.getVal() && this.getVal().length > 0 ) {
+        this.removeError('required')
         return;
       // if empty required field and non required constraint fails, do not display
       } else if ( this.isRequired && 'required' !== constraint.name && ( null === this.getVal() || 0 === this.getVal().length ) ) {
+        this.removeError('type')
         return;
       }
 
@@ -1032,8 +1034,8 @@
 
       // alaways bind keyup event, for better UX when a field is invalid
       var self = this
-        , triggers = ( !this.options.trigger ? '' : this.options.trigger )
-        + ( new RegExp( 'change', 'i' ).test( this.options.trigger ) ? '' : ' change' );
+        , triggers = ( !this.options.trigger ? '' : this.options.trigger );
+        // + ( new RegExp( 'change', 'i' ).test( this.options.trigger ) ? '' : ' change' );
 
       // trim triggers to bind them correctly with .on()
       triggers = triggers.replace( /^\s+/g , '' ).replace( /\s+$/g ,'' );
