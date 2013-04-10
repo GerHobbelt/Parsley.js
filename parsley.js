@@ -560,17 +560,19 @@
 
       // alaways bind keyup event, for better UX when a field is invalid
       var triggers = ( !this.options.trigger ? '' : this.options.trigger );
-        // + ( new RegExp( 'key', 'i' ).test( this.options.trigger ) ? '' : ' keyup' );
+
 
       // alaways bind change event, for better UX when a select is invalid
-      if ( this.$element.is( 'select' ) ) {
-        triggers += new RegExp( 'change', 'i' ).test( triggers ) ? '' : ' change';
-      }
+      // if ( this.$element.is( 'select' ) ) {
+      //   triggers += new RegExp( 'change', 'i' ).test( triggers ) ? '' : ' change';
+      // }
 
       // trim triggers to bind them correctly with .on()
       triggers = triggers.replace( /^\s+/g , '' ).replace( /\s+$/g , '' );
 
-      this.$element.on( ( triggers + ' ' ).split( ' ' ).join( '.' + this.type + ' ' ), false, $.proxy( this.eventValidation, this ) );
+      if (triggers != '') {
+        this.$element.on( ( triggers + ' ' ).split( ' ' ).join( '.' + this.type + ' ' ), false, $.proxy( this.eventValidation, this ) );
+      }
     }
 
     /**
