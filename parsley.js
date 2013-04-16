@@ -631,7 +631,7 @@
         return true;
       }
 
-      this.validate( true );
+      this.validate();
     }
 
     /**
@@ -685,11 +685,9 @@
         return this.valid;
       }
 
-      this.errorBubbling = 'undefined' !== typeof errorBubbling ? errorBubbling : true;
-
       valid = this.applyValidators();
 
-      if ( this.errorBubbling ) {
+      if ( 'undefined' !== typeof errorBubbling ? errorBubbling : this.options.showErrors ) {
         this.manageValidationResult();
       }
 
@@ -728,9 +726,11 @@
         if ( false === result ) {
           valid = false;
           this.constraints[ constraint ].valid = valid;
+          this.options.listeners.onFieldError( this.element, this.constraints, this );
         } else if ( true === result ) {
           this.constraints[ constraint ].valid = true;
           valid = false !== valid;
+          this.options.listeners.onFieldSuccess( this.element, this.constraints, this );
         }
       }
 
@@ -764,11 +764,9 @@
       if ( true === this.valid ) {
         this.removeErrors();
         this.errorClassHandler.removeClass( this.options.errorClass ).addClass( this.options.successClass );
-        this.options.listeners.onFieldSuccess( this.element, this.constraints, this );
         return true;
       } else if ( false === this.valid ) {
         this.errorClassHandler.removeClass( this.options.successClass ).addClass( this.options.errorClass );
-        this.options.listeners.onFieldError( this.element, this.constraints, this );
         return false;
       }
 
@@ -793,9 +791,15 @@
     * @param {String} constraintName Method Name
     */
     , removeError: function ( constraintName ) {
-      var liError = this.ulError + ' .' + constraintName;
+      var liError = this.ulError + ' .' + constraintName
+        , that = this;
 
-      this.options.animate ? $( liError ).fadeOut( this.options.animateDuration, function () { $( this ).remove() } ) : $( liError ).remove();
+      this.options.animate ? $( liError ).fadeOut( this.options.animateDuration, function () {
+        $( this ).remove();
+
+        if ( that.ulError && $( that.ulError ).children().length === 0 ) {
+          that.removeErrors();
+        } } ) : $( liError ).remove();
 
       // remove li error, and ul error if no more li inside
       if ( this.ulError && $( this.ulError ).children().length === 0 ) {
@@ -1293,6 +1297,7 @@
     , errorClass: 'parsley-error'               // Class name on each invalid input
     , errorMessage: false                       // Customize an unique error message showed if one constraint fails
     , validators: {}                            // Add your custom validators functions
+    , showErrors: true                          // Set to false if you don't want Parsley to display error messages
     , messages: {}                              // Add your own error messages here
 
     //some quite advanced configuration here..
