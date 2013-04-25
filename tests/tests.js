@@ -199,6 +199,10 @@ var testSuite = function () {
         expect( $( '#errorMessage' ).hasClass( 'parsley-error' ) ).to.be( true );
         expect( $( '#' + $( '#errorMessage' ).parsley( 'getHash' ) + ' li' ).length ).to.be( 1 );
       } )
+      it ( 'Test that error messages could be html', function () {
+        $( '#errorMessage' ).val( 'foobar' ).parsley( 'validate' );
+        expect( $( '#' + $( '#errorMessage' ).parsley( 'getHash' ) + ' li' ).text() ).to.be( 'This is my custom message' );
+      })
     } )
 
     /***************************************
@@ -275,7 +279,7 @@ var testSuite = function () {
       it ( 'min', function () {
         triggerSubmitValidation( '#min', '8' );
         expect( $( '#min' ).hasClass( 'parsley-error' ) ).to.be( true );
-        expect( getErrorMessage( '#min', 'min') ).to.be( 'This value should be greater than 10.' );
+        expect( getErrorMessage( '#min', 'min') ).to.be( 'This value should be greater than or equal to 10.' );
         triggerSubmitValidation( '#min', '12' );
         expect( $( '#min' ).hasClass( 'parsley-success' ) ).to.be( true );
       } )
@@ -290,7 +294,7 @@ var testSuite = function () {
       it ( 'max', function () {
         triggerSubmitValidation( '#max', '12' );
         expect( $( '#max' ).hasClass( 'parsley-error' ) ).to.be( true );
-        expect( getErrorMessage( '#max', 'max') ).to.be( 'This value should be lower than 10.' );
+        expect( getErrorMessage( '#max', 'max') ).to.be( 'This value should be lower than or equal to 10.' );
         triggerSubmitValidation( '#max', '10' );
         expect( $( '#max' ).hasClass( 'parsley-success' ) ).to.be( true );
       } )
@@ -1103,6 +1107,23 @@ var testSuite = function () {
          expect( getErrorMessage( '#luhn', 'luhn') ).to.be( 'This value should pass the luhn test.' );
          triggerSubmitValidation( '#luhn', '4000000000000002' );
          expect( $( '#luhn' ).hasClass( 'parsley-success' ) ).to.be( true );
+       } )
+       it ( 'americanDate', function () {
+    	 triggerSubmitValidation( '#americanDate', '28/02/2012' );
+    	 expect( $( '#americanDate' ).hasClass( 'parsley-error' ) ).to.be( true );
+    	 expect( getErrorMessage( '#americanDate', 'americanDate') ).to.be( 'This value should be a valid date (MM/DD/YYYY).' );
+    	 triggerSubmitValidation( '#americanDate', '02/08/2012' );
+    	 expect( $( '#americanDate' ).hasClass( 'parsley-success' ) ).to.be( true );
+    	 triggerSubmitValidation( '#americanDate', '2/8/12' );
+    	 expect( $( '#americanDate' ).hasClass( 'parsley-success' ) ).to.be( true );
+    	 triggerSubmitValidation( '#americanDate', '02-08-2012' );
+    	 expect( $( '#americanDate' ).hasClass( 'parsley-success' ) ).to.be( true );
+    	 triggerSubmitValidation( '#americanDate', '2-8-12' );
+    	 expect( $( '#americanDate' ).hasClass( 'parsley-success' ) ).to.be( true );
+    	 triggerSubmitValidation( '#americanDate', '02.08.2012' );
+    	 expect( $( '#americanDate' ).hasClass( 'parsley-success' ) ).to.be( true );
+    	 triggerSubmitValidation( '#americanDate', '2.8.12' );
+    	 expect( $( '#americanDate' ).hasClass( 'parsley-success' ) ).to.be( true );
        } )
      } )
 
